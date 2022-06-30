@@ -3,8 +3,8 @@
    class="full-width background"
    @click.prevent="beepOnClick"
    >
-    <HeaderControl v-model="selectedScale" :options="availableScaleNames"/>
     <img id="foreground" :src="foregrounds[0].src" :alt="foregrounds[0].alt" :height="height" :width="width" />
+    <HeaderControl :value="selectedScale" @change="onChange" :options="availableScaleNames"/>
   </div>
 </template>
 
@@ -12,6 +12,7 @@
 import GardenGates from './assets/garden-gates-entrance.png'
 import Pizzicato from 'pizzicato'
 import HeaderControl from './HeaderControl'
+import { getFrequencyForNames as n, getOctaveFreqArray as o } from './notes'
 
 export default {
   name: 'App',
@@ -20,13 +21,16 @@ export default {
   },
   data: function () {
     return {
+      n,
       height: 0,
       width: 0,
       x: 0,
       y: 0,
       availableScales: {
         gMinorPentatonic: [98, 116.54, 130.81, 146.83, 174.61, 196, 233.08, 261.63, 293.66, 349.23, 392, 466.16, 523.25, 587.33, 698.46, 783.99, 932.33, 1046.5, 1174.66, 1396.91, 1567.98],
-        gMajorPentatonic: [98, 110, 123.47, 146.83, 164.81, 196, 220, 246.94, 293.66, 329.63, 392, 440, 493.88, 587.33, 659.25, 783.99, 880, 987.77, 1174.66, 1318.51, 1567.98]
+        gMajorPentatonic: [98, 110, 123.47, 146.83, 164.81, 196, 220, 246.94, 293.66, 329.63, 392, 440, 493.88, 587.33, 659.25, 783.99, 880, 987.77, 1174.66, 1318.51, 1567.98],
+        dMinorBlues: [...o(3, 5, 'D', 'F', 'G', 'G#/Ab', 'A', 'C', 'D'), ...n('D6')],
+        ePhrygianDominant: [...o(3, 6, 'E', 'F', 'G#/Ab', 'A', 'B', 'C', 'D'), ...n('E6')]
       },
       selectedScale: 'gMinorPentatonic',
       foregrounds: [
@@ -53,6 +57,9 @@ export default {
     window.removeEventListener('resize', this.resize)
   },
   methods: {
+    onChange (event) {
+      this.selectedScale = event
+    },
     resize (event) {
       this.saveWindowSize()
     },
@@ -60,11 +67,14 @@ export default {
       this.x = event.clientX
       this.y = event.clientY
 
+      const freq = this.currentScale[(this.x + this.y) % this.currentScale.length]
+      console.log(freq)
+
       const myBeep = new Pizzicato.Sound({
         source: 'wave',
         options: {
           release: 0.1,
-          frequency: this.currentScale[(this.x + this.y) % this.currentScale.length]
+          frequency: freq
         }
       })
 
