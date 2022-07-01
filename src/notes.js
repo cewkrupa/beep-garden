@@ -872,11 +872,24 @@ export const generateScale = (startNote, integerNotationArray, floor, ceiling) =
 
   const noteNamesForScale = integerNotationArray.map(step => {
     const targetIndex = step + startPoint // if given A, then a step of 5, should be D. Step should be 0 indexed.
-    const actualIndex = targetIndex % loopPoint
-    return noteLetterArray[actualIndex]
-  })
+    let actualIndex = targetIndex % loopPoint
+    if (targetIndex > loopPoint) {
+      actualIndex = actualIndex - 1
+    }
 
-  console.log(`${startNote} : ` + noteNamesForScale)
+    const result = noteLetterArray[actualIndex]
+
+    console.log({
+      step,
+      startPoint,
+      loopPoint,
+      targetIndex,
+      actualIndex,
+      result
+    })
+
+    return result
+  })
 
   return getOctaveFreqArray(floor, ceiling, ...noteNamesForScale)
 }

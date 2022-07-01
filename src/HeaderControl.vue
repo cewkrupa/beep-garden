@@ -65,10 +65,10 @@ export default {
       this.$emit('change:startNote', value)
     },
     emitChangeFloorOctave (value) {
-      this.$emit('change:floorOctave', value)
+      this.$emit('change:floorOctave', parseInt(value))
     },
     emitChangeCeilingOctave (value) {
-      this.$emit('change:ceilingOctave', value)
+      this.$emit('change:ceilingOctave', parseInt(value))
     }
   }
 
