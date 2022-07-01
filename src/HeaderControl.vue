@@ -13,10 +13,10 @@
         </select>
 
         <select :value="floorOctave" @change.stop="emitChangeFloorOctave($event.target.value)" name="Select floor octave">
-          <option v-for="octave in octaves" :value="octave" :key="octave">{{octave}}</option>
+          <option v-for="octave in constrainedFloorOctaves" :value="octave" :key="octave">{{octave}}</option>
         </select>
         <select :value="ceilingOctave" @change.stop="emitChangeCeilingOctave($event.target.value)" name="Select ceiling octave">
-          <option v-for="octave in octaves" :value="octave" :key="octave">{{octave}}</option>
+          <option v-for="octave in constrainedCeilingOctaves" :value="octave" :key="octave">{{octave}}</option>
         </select>
       </div>
     </div>
@@ -55,6 +55,14 @@ export default {
   data () {
     return {
       showSelect: false
+    }
+  },
+  computed: {
+    constrainedFloorOctaves () {
+      return this.octaves.filter(octave => octave <= this.ceilingOctave)
+    },
+    constrainedCeilingOctaves () {
+      return this.octaves.filter(octave => octave >= this.floorOctave)
     }
   },
   methods: {
