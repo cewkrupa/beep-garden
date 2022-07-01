@@ -60,6 +60,9 @@ export default {
   methods: {
     resetState () {
       this.showSelect = false
+      this.resetValues()
+    },
+    resetValues () {
       this.newStartNote = this.startNote
       this.newScale = this.scale
       this.newFloor = this.floorOctave
@@ -84,6 +87,13 @@ export default {
     },
     emitChangeCeilingOctave (value) {
       this.$emit('change:ceilingOctave', parseInt(value))
+    }
+  },
+  watch: {
+    showSelect: function (val) {
+      if (val) {
+        this.resetValues()
+      }
     }
   }
 
