@@ -2,9 +2,23 @@
   <div class="flex fixed" id="wrapper">
     <div id="headerControl" class="flex fixed" @click.stop>
       <h1 @click="showSelect = !showSelect">Beep Garden</h1>
-      <select v-if="showSelect" :value="value" @change.stop="emitChange($event.target.value)">
-        <option v-for="option in options" :value="option" :key="option">{{option}}</option>
-      </select>
+
+      <div class="header-selects flex " v-if="showSelect">
+        <select :value="startNote" @change.stop="emitChangeStartNote($event.target.value)" name="Select start note">
+          <option v-for="note in startNotes" :value="note" :key="note">{{note}}</option>
+        </select>
+
+        <select :value="scale" @change.stop="emitChangeScale($event.target.value)" name="Select scale">
+          <option v-for="scale in scales" :value="scale" :key="scale">{{scale}}</option>
+        </select>
+
+        <select :value="floorOctave" @change.stop="emitChangeFloorOctave($event.target.value)" name="Select floor octave">
+          <option v-for="octave in octaves" :value="octave" :key="octave">{{octave}}</option>
+        </select>
+        <select :value="ceilingOctave" @change.stop="emitChangeCeilingOctave($event.target.value)" name="Select ceiling octave">
+          <option v-for="octave in octaves" :value="octave" :key="octave">{{octave}}</option>
+        </select>
+      </div>
     </div>
   </div>
 </template>
@@ -13,11 +27,30 @@
 export default {
   name: 'HeaderControl',
   props: {
-    value: {
+    preset: {
       type: String,
-      default: 'gMinorPentatonic'
+      default: 'Major pentatonic scale'
     },
-    options: Array
+    presets: Array,
+    startNote: {
+      type: String,
+      default: 'C'
+    },
+    startNotes: Array,
+    scale: {
+      type: String,
+      default: 'Major'
+    },
+    scales: Array,
+    floorOctave: {
+      type: Number,
+      default: 4
+    },
+    ceilingOctave: {
+      type: Number,
+      default: 4
+    },
+    octaves: Array
   },
   data () {
     return {
@@ -25,9 +58,17 @@ export default {
     }
   },
   methods: {
-    emitChange (value) {
-      this.$emit('change', value)
-      this.showSelect = false
+    emitChangeScale (value) {
+      this.$emit('change:scale', value)
+    },
+    emitChangeStartNote (value) {
+      this.$emit('change:startNote', value)
+    },
+    emitChangeFloorOctave (value) {
+      this.$emit('change:floorOctave', value)
+    },
+    emitChangeCeilingOctave (value) {
+      this.$emit('change:ceilingOctave', value)
     }
   }
 
@@ -55,5 +96,13 @@ export default {
   -ms-user-select: none;
   user-select: none;
   font-family: "Dosis", sans-serif;
+}
+
+.header-selects {
+  flex-direction: column;
+}
+
+.header-selects select{
+  flex-shrink: 1;
 }
 </style>

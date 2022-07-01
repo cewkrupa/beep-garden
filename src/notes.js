@@ -84,13 +84,6 @@ const notes = [
     comment: 'Lowest Note of 5 string bass'
   },
   {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
-    comment: ''
-  },
-  {
     noteName: 'C',
     octave: '1',
     frequencyHz: '32.703',
@@ -172,13 +165,6 @@ const notes = [
     octave: '1',
     frequencyHz: '61.735',
     wavelengthM: '5.512m',
-    comment: ''
-  },
-  {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
     comment: ''
   },
   {
@@ -266,13 +252,6 @@ const notes = [
     comment: ''
   },
   {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
-    comment: ''
-  },
-  {
     noteName: 'C',
     octave: '3',
     frequencyHz: '130.813',
@@ -354,13 +333,6 @@ const notes = [
     octave: '3',
     frequencyHz: '246.942',
     wavelengthM: '1.378m',
-    comment: ''
-  },
-  {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
     comment: ''
   },
   {
@@ -448,13 +420,6 @@ const notes = [
     comment: ''
   },
   {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
-    comment: ''
-  },
-  {
     noteName: 'C',
     octave: '5',
     frequencyHz: '523.251',
@@ -536,13 +501,6 @@ const notes = [
     octave: '5',
     frequencyHz: '987.767',
     wavelengthM: '0.345m',
-    comment: ''
-  },
-  {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
     comment: ''
   },
   {
@@ -630,13 +588,6 @@ const notes = [
     comment: ''
   },
   {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
-    comment: ''
-  },
-  {
     noteName: 'C',
     octave: '7',
     frequencyHz: '2093.005',
@@ -721,13 +672,6 @@ const notes = [
     comment: ''
   },
   {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
-    comment: ''
-  },
-  {
     noteName: 'C',
     octave: '8',
     frequencyHz: '4186.009',
@@ -809,13 +753,6 @@ const notes = [
     octave: '8',
     frequencyHz: '7902.132',
     wavelengthM: '0.043m',
-    comment: ''
-  },
-  {
-    noteName: '',
-    octave: '',
-    frequencyHz: '',
-    wavelengthM: '',
     comment: ''
   },
   {
@@ -915,16 +852,249 @@ export const getFrequencyForNames = (...names) => {
   return names.map(name => nameAndOctaveToFreqMap[name])
 }
 
-export const getOctaveFreqArray = (floor, ceil, ...names) => {
+export const getOctaveFreqArray = (floor, ceiling, ...names) => {
   const namesWithOctaves = []
 
-  for (let octave = floor; octave <= ceil; octave++) {
+  for (let octave = floor; octave <= ceiling; octave++) {
     const scaleOctave = names.map(name => {
       return `${name}${octave}`
     })
     namesWithOctaves.push(...scaleOctave)
   }
   return getFrequencyForNames(...namesWithOctaves)
+}
+
+export const generateScale = (startNote, integerNotationArray, floor, ceiling) => {
+  const loopPoint = noteLetterArray.length - 1 // should be 11
+  const startPoint = noteLetterArray.indexOf(startNote) // if given A, should b 0. If G, 10
+
+  if (startPoint === -1) return [] // it's not a note we know about, so return
+
+  const noteNamesForScale = integerNotationArray.map(step => {
+    const targetIndex = step + startPoint // if given A, then a step of 5, should be D. Step should be 0 indexed.
+    const actualIndex = targetIndex % loopPoint
+    return noteLetterArray[actualIndex]
+  })
+
+  console.log(`${startNote} : ` + noteNamesForScale)
+
+  return getOctaveFreqArray(floor, ceiling, ...noteNamesForScale)
+}
+
+export const noteLetterArray = [
+  'A',
+  'A#/Bb',
+  'B',
+  'C',
+  'C#/Db',
+  'D',
+  'D#/Eb',
+  'E',
+  'F',
+  'F#/Gb',
+  'G',
+  'G#/Ab'
+]
+
+export const scaleDefinitions = {
+  'Acoustic scale': {
+    name: 'Acoustic scale',
+    integerNotation: [0, 2, 4, 6, 7, 9, 10]
+  },
+  'Aeolian mode or natural minor scale': {
+    name: 'Aeolian mode or natural minor scale',
+    integerNotation: [0, 2, 3, 5, 7, 8, 10]
+  },
+  'Algerian scale': {
+    name: 'Algerian scale',
+    integerNotation: [0, 2, 3, 6, 7, 9, 11, 12, 14, 15, 17]
+  },
+  'Altered scale or Super Locrian scale': {
+    name: 'Altered scale or Super Locrian scale',
+    integerNotation: [0, 1, 3, 4, 6, 8, 10]
+  },
+  'Augmented scale': {
+    name: 'Augmented scale',
+    integerNotation: [0, 3, 4, 7, 8, 11]
+  },
+  'Bebop dominant scale': {
+    name: 'Bebop dominant scale',
+    integerNotation: [0, 2, 4, 5, 7, 9, 10, 11]
+  },
+  'Blues scale': {
+    name: 'Blues scale',
+    integerNotation: [0, 3, 5, 6, 7, 10]
+  },
+  'Chromatic scale': {
+    name: 'Chromatic scale',
+    integerNotation: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  },
+  'Dorian mode': {
+    name: 'Dorian mode',
+    integerNotation: [0, 2, 3, 5, 7, 9, 10]
+  },
+  'Double harmonic scale': {
+    name: 'Double harmonic scale',
+    integerNotation: [0, 1, 4, 5, 7, 8, 11]
+  },
+  'Enigmatic scale': {
+    name: 'Enigmatic scale',
+    integerNotation: [0, 1, 4, 6, 8, 10, 11]
+  },
+  'Flamenco mode': {
+    name: 'Flamenco mode',
+    integerNotation: [0, 1, 4, 5, 7, 8, 11]
+  },
+  '"Gypsy" scale': {
+    name: '"Gypsy" scale',
+    integerNotation: [0, 2, 3, 6, 7, 8, 10]
+  },
+  'Half diminished scale': {
+    name: 'Half diminished scale',
+    integerNotation: [0, 2, 3, 5, 6, 8, 10]
+  },
+  'Harmonic major scale': {
+    name: 'Harmonic major scale',
+    integerNotation: [0, 2, 4, 5, 7, 8, 11]
+  },
+  'Harmonic minor scale': {
+    name: 'Harmonic minor scale',
+    integerNotation: [0, 2, 3, 5, 7, 8, 11]
+  },
+  'Hirajoshi scale': {
+    name: 'Hirajoshi scale',
+    integerNotation: [0, 4, 6, 7, 11]
+  },
+  'Hungarian "Gypsy" scale/Hungarian minor scale': {
+    name: 'Hungarian "Gypsy" scale/Hungarian minor scale',
+    integerNotation: [0, 2, 3, 6, 7, 8, 11]
+  },
+  'Hungarian major scale': {
+    name: 'Hungarian major scale',
+    integerNotation: [0, 3, 4, 6, 7, 9, 10]
+  },
+  'In scale': {
+    name: 'In scale',
+    integerNotation: [0, 1, 5, 7, 8]
+  },
+  'Insen scale': {
+    name: 'Insen scale',
+    integerNotation: [0, 1, 5, 7, 10]
+  },
+  'Istrian scale': {
+    name: 'Istrian scale',
+    integerNotation: [0, 1, 3, 4, 6, 7]
+  },
+  'Iwato scale': {
+    name: 'Iwato scale',
+    integerNotation: [0, 1, 5, 6, 10]
+  },
+  'Locrian mode': {
+    name: 'Locrian mode',
+    integerNotation: [0, 1, 3, 5, 6, 8, 10]
+  },
+  'Lydian augmented scale': {
+    name: 'Lydian augmented scale',
+    integerNotation: [0, 2, 4, 6, 8, 9, 11]
+  },
+  'Lydian mode': {
+    name: 'Lydian mode',
+    integerNotation: [0, 2, 4, 6, 7, 9, 11]
+  },
+  'Major scale / Ionian': {
+    name: 'Ionian mode or major scale',
+    integerNotation: [0, 2, 4, 5, 7, 9, 11]
+  },
+  'Major bebop scale': {
+    name: 'Major bebop scale',
+    integerNotation: [0, 2, 4, 5, 7, 8, 9, 11]
+  },
+  'Major Locrian scale': {
+    name: 'Major Locrian scale',
+    integerNotation: [0, 2, 4, 5, 6, 8, 10]
+  },
+  'Major pentatonic scale': {
+    name: 'Major pentatonic scale',
+    integerNotation: [0, 2, 4, 7, 9]
+  },
+  // Can't do the melodic minor right now because I don't have a concept of ascending or descending
+  // 'Melodic minor scale': {
+  //   name: 'Melodic minor scale',
+  //   integerNotation: [0, 2, 3, 5, 7, 9, 11) (ascending) \n(12, 10, 8, 7, 5, 3, 2](descending)'
+  // },
+  'Melodic minor scale (ascending)': {
+    name: 'Melodic minor scale (ascending)',
+    integerNotation: [0, 2, 3, 5, 7, 9, 11]
+  },
+  'Minor pentatonic scale': {
+    name: 'Minor pentatonic scale',
+    integerNotation: [0, 3, 5, 7, 10]
+  },
+  'Mixolydian mode or Adonai malakh mode': {
+    name: 'Mixolydian mode or Adonai malakh mode',
+    integerNotation: [0, 2, 4, 5, 7, 9, 10]
+  },
+  'Neapolitan major scale': {
+    name: 'Neapolitan major scale',
+    integerNotation: [0, 1, 3, 5, 7, 9, 11]
+  },
+  'Neapolitan minor scale': {
+    name: 'Neapolitan minor scale',
+    integerNotation: [0, 1, 3, 5, 7, 8, 11]
+  },
+  // 'Octatonic scale': {
+  //   name: 'Octatonic scale',
+  //   integerNotation: [0, 2, 3, 5, 6, 8, 9, 11) \n(0, 1, 3, 4, 6, 7, 9, 10]
+  // },
+  'Persian scale': {
+    name: 'Persian scale',
+    integerNotation: [0, 1, 4, 5, 6, 8, 11]
+  },
+  'Phrygian dominant scale': {
+    name: 'Phrygian dominant scale',
+    integerNotation: [0, 1, 4, 5, 7, 8, 10]
+  },
+  'Phrygian mode': {
+    name: 'Phrygian mode',
+    integerNotation: [0, 1, 3, 5, 7, 8, 10]
+  },
+  'Prometheus scale': {
+    name: 'Prometheus scale',
+    integerNotation: [0, 2, 4, 6, 9, 10]
+  },
+  // Can't do quarter tones here
+  // 'Quarter tone scale': {
+  //   name: 'Quarter tone scale',
+  //   integerNotation: [0, 1 / 2, 1, 3 / 2, 2, 5 / 2, \n3, 7 / 2, 4, 9 / 2, 5, 11 / 2, \n6, 13 / 2, 7, 1]2, 8, 17/2,\n9,19/2, 10, 21/2,11,23/2) '
+  // },
+  'Scale of harmonics': {
+    name: 'Scale of harmonics',
+    integerNotation: [0, 3, 4, 5, 7, 9]
+  },
+  'Tritone scale': {
+    name: 'Tritone scale',
+    integerNotation: [0, 1, 4, 6, 7, 10]
+  },
+  'Two-semitone tritone scale': {
+    name: 'Two-semitone tritone scale',
+    integerNotation: [0, 1, 2, 6, 7, 8]
+  },
+  'Ukrainian Dorian scale': {
+    name: 'Ukrainian Dorian scale',
+    integerNotation: [0, 2, 3, 6, 7, 9, 10]
+  },
+  'Vietnamese scale of harmonics': {
+    name: 'Vietnamese scale of harmonics',
+    integerNotation: [0, 5 / 2, 3, 4, 5, 7]
+  },
+  'Whole tone scale': {
+    name: 'Whole tone scale',
+    integerNotation: [0, 2, 4, 6, 8, 10]
+  },
+  'Yo scale': {
+    name: 'Yo scale',
+    integerNotation: [0, 3, 5, 7, 10]
+  }
 }
 
 export default notes

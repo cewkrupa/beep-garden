@@ -4,7 +4,23 @@
    @click.prevent="beepOnClick"
    >
     <img id="foreground" :src="foregrounds[0].src" :alt="foregrounds[0].alt" :height="height" :width="width" />
-    <HeaderControl :value="selectedScale" @change="onChange" :options="availableScaleNames"/>
+    <HeaderControl
+
+      :startNote="selectedStartNote"
+      :startNotes="availableNotes"
+      @change:startNote="onChangeStartNote"
+
+      :scale="selectedScaleName"
+      :scales="availableScales"
+      @change:scale="onChangeScale"
+
+      :floorOctave="selectedFloorOctave"
+      :ceilingOctave="selectedCeilingOctave"
+      :octaves="availableOctaves"
+      @change:floorOctave="onChangeFloorOctave"
+      @change:ceilingOctave="onChangeCeilingOctave"
+
+    />
   </div>
 </template>
 
@@ -12,8 +28,7 @@
 import GardenGates from './assets/garden-gates-entrance.png'
 import Pizzicato from 'pizzicato'
 import HeaderControl from './HeaderControl'
-import { getFrequencyForNames as n, getOctaveFreqArray as o } from './notes'
-
+import { getFrequencyForNames as n, generateScale as g, scaleDefinitions, noteLetterArray } from './notes'
 export default {
   name: 'App',
   components: {
@@ -26,13 +41,13 @@ export default {
       width: 0,
       x: 0,
       y: 0,
-      availableScales: {
-        gMinorPentatonic: [98, 116.54, 130.81, 146.83, 174.61, 196, 233.08, 261.63, 293.66, 349.23, 392, 466.16, 523.25, 587.33, 698.46, 783.99, 932.33, 1046.5, 1174.66, 1396.91, 1567.98],
-        gMajorPentatonic: [98, 110, 123.47, 146.83, 164.81, 196, 220, 246.94, 293.66, 329.63, 392, 440, 493.88, 587.33, 659.25, 783.99, 880, 987.77, 1174.66, 1318.51, 1567.98],
-        dMinorBlues: [...o(3, 5, 'D', 'F', 'G', 'G#/Ab', 'A', 'C', 'D'), ...n('D6')],
-        ePhrygianDominant: [...o(3, 6, 'E', 'F', 'G#/Ab', 'A', 'B', 'C', 'D'), ...n('E6')]
-      },
-      selectedScale: 'gMinorPentatonic',
+      availableNotes: noteLetterArray,
+      availableScales: Object.keys(scaleDefinitions),
+      availableOctaves: [2, 3, 4, 5, 6, 7, 8, 9],
+      selectedStartNote: 'E',
+      selectedScaleName: 'Major pentatonic scale',
+      selectedFloorOctave: 4,
+      selectedCeilingOctave: 6,
       foregrounds: [
         {
           src: GardenGates,
@@ -42,11 +57,16 @@ export default {
     }
   },
   computed: {
-    availableScaleNames: function () {
-      return Object.keys(this.availableScales)
-    },
     currentScale: function () {
-      return this.availableScales[this.selectedScale]
+      const scaleDefinition = scaleDefinitions[this.selectedScaleName].integerNotation
+
+      console.log(scaleDefinition)
+      return g(
+        this.selectedStartNote,
+        scaleDefinition,
+        this.selectedFloorOctave,
+        this.selectedCeilingOctave
+      )
     }
   },
   created () {
@@ -57,8 +77,20 @@ export default {
     window.removeEventListener('resize', this.resize)
   },
   methods: {
-    onChange (event) {
-      this.selectedScale = event
+    onChangePreset (event) {
+      this.selectedScalePreset = event
+    },
+    onChangeScale (event) {
+      this.selectedScaleName = event
+    },
+    onChangeStartNote (event) {
+      this.selectedStartNote = event
+    },
+    onChangeFloorOctave (event) {
+      this.selectedFloorOctave = event
+    },
+    onChangeCeilingOctave (event) {
+      this.selectedFloorOctave = event
     },
     resize (event) {
       this.saveWindowSize()
