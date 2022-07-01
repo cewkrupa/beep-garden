@@ -90,7 +90,7 @@ export default {
       this.selectedFloorOctave = event
     },
     onChangeCeilingOctave (event) {
-      this.selectedFloorOctave = event
+      this.selectedCeilingOctave = event
     },
     resize (event) {
       this.saveWindowSize()
