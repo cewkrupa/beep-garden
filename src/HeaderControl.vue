@@ -51,10 +51,10 @@ export default {
   },
   computed: {
     constrainedFloorOctaves () {
-      return this.octaves.filter(octave => octave <= this.ceilingOctave)
+      return this.octaves.filter(octave => octave <= this.newCeil)
     },
     constrainedCeilingOctaves () {
-      return this.octaves.filter(octave => octave >= this.floorOctave)
+      return this.octaves.filter(octave => octave >= this.newFloor)
     }
   },
   methods: {
