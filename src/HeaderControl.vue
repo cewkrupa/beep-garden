@@ -4,18 +4,18 @@
       <h1 @click="showSelect = !showSelect">Beep Garden</h1>
 
       <div class="header-selects flex " v-if="showSelect">
-        <select :value="startNote" @change.stop="newStartNote = $event.target.value" name="Select start note">
+        <select :value="newStartNote" @change.stop="newStartNote = $event.target.value" name="Select start note">
           <option v-for="note in startNotes" :value="note" :key="note">{{note}}</option>
         </select>
 
-        <select :value="scale" @change.stop="newScale = $event.target.value" name="Select scale">
+        <select :value="newScale" @change.stop="newScale = $event.target.value" name="Select scale">
           <option v-for="scale in scales" :value="scale" :key="scale">{{scale}}</option>
         </select>
 
-        <select :value="floorOctave" @change.stop="newFloor = $event.target.value" name="Select floor octave">
+        <select :value="newFloor" @change.stop="newFloor = parseInt($event.target.value)" name="Select floor octave">
           <option v-for="octave in constrainedFloorOctaves" :value="octave" :key="octave">{{octave}}</option>
         </select>
-        <select :value="ceilingOctave" @change.stop="newCeil = $event.target.value" name="Select ceiling octave">
+        <select :value="newCeil" @change.stop="newCeil = parseInt($event.target.value)" name="Select ceiling octave">
           <option v-for="octave in constrainedCeilingOctaves" :value="octave" :key="octave">{{octave}}</option>
         </select>
         <div class="flex buttons">
