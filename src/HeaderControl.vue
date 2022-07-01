@@ -4,20 +4,24 @@
       <h1 @click="showSelect = !showSelect">Beep Garden</h1>
 
       <div class="header-selects flex " v-if="showSelect">
-        <select :value="startNote" @change.stop="emitChangeStartNote($event.target.value)" name="Select start note">
+        <select :value="startNote" @change.stop="newStartNote = $event.target.value" name="Select start note">
           <option v-for="note in startNotes" :value="note" :key="note">{{note}}</option>
         </select>
 
-        <select :value="scale" @change.stop="emitChangeScale($event.target.value)" name="Select scale">
+        <select :value="scale" @change.stop="newScale = $event.target.value" name="Select scale">
           <option v-for="scale in scales" :value="scale" :key="scale">{{scale}}</option>
         </select>
 
-        <select :value="floorOctave" @change.stop="emitChangeFloorOctave($event.target.value)" name="Select floor octave">
+        <select :value="floorOctave" @change.stop="newFloor = $event.target.value" name="Select floor octave">
           <option v-for="octave in constrainedFloorOctaves" :value="octave" :key="octave">{{octave}}</option>
         </select>
-        <select :value="ceilingOctave" @change.stop="emitChangeCeilingOctave($event.target.value)" name="Select ceiling octave">
+        <select :value="ceilingOctave" @change.stop="newCeil = $event.target.value" name="Select ceiling octave">
           <option v-for="octave in constrainedCeilingOctaves" :value="octave" :key="octave">{{octave}}</option>
         </select>
+        <div class="flex buttons">
+          <button @click.stop="resetState">cancel changes</button>
+          <button @click.stop="emitConfigChange">apply changes</button>
+        </div>
       </div>
     </div>
   </div>
@@ -27,34 +31,22 @@
 export default {
   name: 'HeaderControl',
   props: {
-    preset: {
-      type: String,
-      default: 'Major pentatonic scale'
-    },
     presets: Array,
-    startNote: {
-      type: String,
-      default: 'C'
-    },
+    startNote: String,
     startNotes: Array,
-    scale: {
-      type: String,
-      default: 'Major'
-    },
+    scale: String,
     scales: Array,
-    floorOctave: {
-      type: Number,
-      default: 4
-    },
-    ceilingOctave: {
-      type: Number,
-      default: 4
-    },
+    floorOctave: Number,
+    ceilingOctave: Number,
     octaves: Array
   },
   data () {
     return {
-      showSelect: false
+      showSelect: false,
+      newStartNote: this.startNote,
+      newScale: this.scale,
+      newFloor: this.floorOctave,
+      newCeil: this.ceilingOctave
     }
   },
   computed: {
@@ -66,6 +58,21 @@ export default {
     }
   },
   methods: {
+    resetState () {
+      this.showSelect = false
+      this.newStartNote = this.startNote
+      this.newScale = this.scale
+      this.newFloor = this.floorOctave
+      this.newCeil = this.ceilingOctave
+    },
+    emitConfigChange () {
+      this.emitChangeScale(this.newScale)
+      this.emitChangeStartNote(this.newStartNote)
+      this.emitChangeFloorOctave(this.newFloor)
+      this.emitChangeCeilingOctave(this.newCeil)
+
+      this.resetState()
+    },
     emitChangeScale (value) {
       this.$emit('change:scale', value)
     },
@@ -112,5 +119,16 @@ export default {
 
 .header-selects select{
   flex-shrink: 1;
+  margin-top: .5em;
+  margin-bottom: .5em;
+}
+
+.buttons {
+  justify-content: space-evenly;
+  padding-top: .5em;
+}
+
+h1 {
+  text-align: center;
 }
 </style>
